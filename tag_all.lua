@@ -14,7 +14,7 @@ local COMMITS = {
 local verDef = "MY_ENGINE_VERSION_STRING"
 local tagDef = "MY_ENGINE_TAG_STRING"
 
-os.execute("echo "..arg[1])
+os.execute("echo Action="..arg[1])
 
 local function readTags(subStr)
 	local tag = {}
@@ -75,36 +75,57 @@ if table.getn(tag) < 3 and table.getn(ver) >= 3 then
 	end
 end
 
+local verNext = getNextTag(ver)
+local tagNext = getNextTag(tag)
+
+if table.getn(ver) >=3 then
+	os.execute("echo Current ver: '"..getTagStr(ver).."'")
+		os.execute("echo Next    ver: '"..getTagStr(verNext).."'")
+end
+
+if table.getn(tag) >=3 then
+	os.execute("echo Current tag: '"..getTagStr(tag).."'")
+		os.execute("echo Next    tag: '"..getTagStr(tagNext).."'")
+end
+
+if table.getn(tagNext) >= 3 and table.getn(verNext) >= 3 then
+	local fileOut = io.open (SRC_DIR.."/MyVersion.h", "w")
+	if fileOut ~= nil then
+		fileOut:write(string.format("#define "..verDef.." \""..getTagStr(verNext).."\"\n"))
+		fileOut:write(string.format("#define "..tagDef.." \""..getTagStr(tagNext).."\"\n"))
+		fileOut:close()
+	end
+end
+
 if arg[1] == "tagNext" then
 
-	local verNext = getNextTag(ver)
-	local tagNext = getNextTag(tag)
+elseif arg[1] == "commitAll" then
 
-	if table.getn(ver) >=3 then
-		os.execute("echo Current ver: '"..getTagStr(ver).."'")
-		os.execute("echo Next    ver: '"..getTagStr(verNext).."'")
-	end
+	local msgStr = arg[2]
 
-	if table.getn(tag) >=3 then
-		os.execute("echo Current tag: '"..getTagStr(tag).."'")
-		os.execute("echo Next    tag: '"..getTagStr(tagNext).."'")
-	end
-
-	if table.getn(tagNext) >= 3 and table.getn(verNext) >= 3 then
-
-		local fileOut = io.open (SRC_DIR.."/MyVersion.h", "w")
-		if fileOut ~= nil then
-			fileOut:write(string.format("#define "..verDef.." \""..getTagStr(verNext).."\"\n"))
-			fileOut:write(string.format("#define "..tagDef.." \""..getTagStr(tagNext).."\"\n"))
-			fileOut:close()
+	if msgStr ~= nil then
+		os.execute("echo Commiting...")
+		os.execute("echo Message="..msgStr)
+		for key, value in COMMITS do
+			os.execute("echo Work on "..value..":")
+			os.execute("git -C "..ROOT_DIR..value.." commit -m \""..msgStr.."\"")
 		end
+	else
+		os.execute("echo Error: Need to specify commit message")
 	end
+
 elseif arg[1] == "pushAll" then
 
-	os.execute("echo Commiting...")
+	local branchStr = arg[2]
 
-	for key, value in COMMITS do
-		os.execute("echo Work on "..value..":")
-		os.execute("git -C "..ROOT_DIR..value.." status")
+	if branchStr ~= nil then
+		os.execute("echo Pushing...")
+		os.execute("echo Branch="..branchStr)
+		for key, value in COMMITS do
+			os.execute("echo Work on "..value..":")
+			os.execute("git -C "..ROOT_DIR..value.." push origin "..branchStr)
+		end
+	else
+		os.execute("echo Error: Need to specify branch to push")
 	end
 end
