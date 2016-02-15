@@ -1,4 +1,6 @@
 
+unpack(arg)
+
 local ROOT_DIR = "../"
 local SRC_DIR = ROOT_DIR.."base/src"
 
@@ -9,11 +11,10 @@ local COMMITS = {
 	[4] = "qshooter",
 }
 
+local verDef = "MY_ENGINE_VERSION_STRING"
+local tagDef = "MY_ENGINE_TAG_STRING"
 
-os.execute("git -C "..ROOT_DIR.."base checkout ./src/MyVersion.h")
-
-
-os.execute("echo Reading current tag...")
+os.execute("echo "..arg[1])
 
 local function readTags(subStr)
 	local tag = {}
@@ -60,8 +61,9 @@ local function getTagStr(tag)
 	return tagStr
 end
 
-local verDef = "MY_ENGINE_VERSION_STRING"
-local tagDef = "MY_ENGINE_TAG_STRING"
+os.execute("git -C "..ROOT_DIR.."base checkout ./src/MyVersion.h")
+
+os.execute("echo Reading current tag...")
 
 local ver = readTags(verDef)
 local tag = readTags(tagDef)
@@ -73,32 +75,36 @@ if table.getn(tag) < 3 and table.getn(ver) >= 3 then
 	end
 end
 
-local verNext = getNextTag(ver)
-local tagNext = getNextTag(tag)
+if arg[1] == "tagNext" then
 
-if table.getn(ver) >=3 then
-	os.execute("echo Current ver: '"..getTagStr(ver).."'")
-	os.execute("echo Next    ver: '"..getTagStr(verNext).."'")
-end
+	local verNext = getNextTag(ver)
+	local tagNext = getNextTag(tag)
 
-if table.getn(tag) >=3 then
-	os.execute("echo Current tag: '"..getTagStr(tag).."'")
-	os.execute("echo Next    tag: '"..getTagStr(tagNext).."'")
-end
-
-if table.getn(tagNext) >= 3 and table.getn(verNext) >= 3 then
-
-	local fileOut = io.open (SRC_DIR.."/MyVersion.h", "w")
-	if fileOut ~= nil then
-		fileOut:write(string.format("#define "..verDef.." \""..getTagStr(verNext).."\"\n"))
-		fileOut:write(string.format("#define "..tagDef.." \""..getTagStr(tagNext).."\"\n"))
-		fileOut:close()
+	if table.getn(ver) >=3 then
+		os.execute("echo Current ver: '"..getTagStr(ver).."'")
+		os.execute("echo Next    ver: '"..getTagStr(verNext).."'")
 	end
-end
 
-os.execute("echo Commiting...")
+	if table.getn(tag) >=3 then
+		os.execute("echo Current tag: '"..getTagStr(tag).."'")
+		os.execute("echo Next    tag: '"..getTagStr(tagNext).."'")
+	end
 
-for key, value in COMMITS do
-	os.execute("echo Work on "..value..":")
-	os.execute("git -C "..ROOT_DIR..value.." status")
+	if table.getn(tagNext) >= 3 and table.getn(verNext) >= 3 then
+
+		local fileOut = io.open (SRC_DIR.."/MyVersion.h", "w")
+		if fileOut ~= nil then
+			fileOut:write(string.format("#define "..verDef.." \""..getTagStr(verNext).."\"\n"))
+			fileOut:write(string.format("#define "..tagDef.." \""..getTagStr(tagNext).."\"\n"))
+			fileOut:close()
+		end
+	end
+elseif arg[1] == "pushAll" then
+
+	os.execute("echo Commiting...")
+
+	for key, value in COMMITS do
+		os.execute("echo Work on "..value..":")
+		os.execute("git -C "..ROOT_DIR..value.." status")
+	end
 end

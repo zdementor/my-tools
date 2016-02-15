@@ -1,1 +1,1 @@
-..\bin\lua.exe .\tag_all.lua
+..\bin\lua.exe .\tag_all.lua tagNext
