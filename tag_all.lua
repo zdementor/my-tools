@@ -145,4 +145,17 @@ elseif arg[1] == "commitAll" then
 		os.execute("echo Error: Need to specify commit message")
 	end
 
+elseif arg[1] == "addAll" then
+
+	for key, value in COMMITS do
+		os.execute("echo -------------"..value..":----------------")
+		os.execute("git -C "..ROOT_DIR..value.." add *")
+	end
+
+elseif arg[1] == "statusAll" then
+
+	for key, value in COMMITS do
+		os.execute("echo -------------"..value..":----------------")
+		os.execute("git -C "..ROOT_DIR..value.." status")
+	end
 end
