@@ -88,24 +88,55 @@ if table.getn(tag) >=3 then
 		os.execute("echo Next    tag: '"..getTagStr(tagNext).."'")
 end
 
-if table.getn(tagNext) >= 3 and table.getn(verNext) >= 3 then
+local function writeMyVer(verStr, tagStr)
 	local fileOut = io.open (SRC_DIR.."/MyVersion.h", "w")
 	if fileOut ~= nil then
-		fileOut:write(string.format("#define "..verDef.." \""..getTagStr(verNext).."\"\n"))
-		fileOut:write(string.format("#define "..tagDef.." \""..getTagStr(tagNext).."\"\n"))
+		fileOut:write(string.format("#define "..verDef.." \""..verStr.."\"\n"))
+		fileOut:write(string.format("#define "..tagDef.." \""..tagStr.."\"\n"))
 		fileOut:close()
 	end
 end
 
 if arg[1] == "tagNext" then
 
+	local tagStr = arg[2]
+
+	if tagStr == nil then
+		tagStr = getTagStr(verNext)
+	end
+
+	if tagStr ~= nil then
+		local msgStr = "Tagging to "..tagStr
+		os.execute("echo Tagging...")
+		os.execute("echo Tag="..tagStr)
+		writeMyVer(tagStr, tagStr)
+		os.execute("git -C "..ROOT_DIR.."base add ./src/MyVersion.h")
+		os.execute("git -C "..ROOT_DIR.."base commit -m \""..msgStr.."\"")
+
+		for key, value in COMMITS do
+			os.execute("echo Work on "..value..":")
+        		os.execute("git -C "..ROOT_DIR..value.." tag -a "..tagStr.." -m \""..msgStr.."\"")
+		end
+	else
+		os.execute("echo Error: Need to specify tag")
+	end
+
 elseif arg[1] == "commitAll" then
 
 	local msgStr = arg[2]
 
 	if msgStr ~= nil then
+
+		local tagStr = getTagStr(tag)
+		local verStr = getTagStr(verNext)
+
 		os.execute("echo Commiting...")
 		os.execute("echo Message="..msgStr)
+
+		writeMyVer(verStr, tagStr)
+		os.execute("git -C "..ROOT_DIR.."base add ./src/MyVersion.h")
+		os.execute("git -C "..ROOT_DIR.."base commit -m \""..msgStr.."\"")
+
 		for key, value in COMMITS do
 			os.execute("echo Work on "..value..":")
 			os.execute("git -C "..ROOT_DIR..value.." commit -m \""..msgStr.."\"")
@@ -114,18 +145,4 @@ elseif arg[1] == "commitAll" then
 		os.execute("echo Error: Need to specify commit message")
 	end
 
-elseif arg[1] == "pushAll" then
-
-	local branchStr = arg[2]
-
-	if branchStr ~= nil then
-		os.execute("echo Pushing...")
-		os.execute("echo Branch="..branchStr)
-		for key, value in COMMITS do
-			os.execute("echo Work on "..value..":")
-			os.execute("git -C "..ROOT_DIR..value.." push origin "..branchStr)
-		end
-	else
-		os.execute("echo Error: Need to specify branch to push")
-	end
 end
