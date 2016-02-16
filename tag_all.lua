@@ -14,7 +14,9 @@ local COMMITS = {
 local verDef = "MY_ENGINE_VERSION_STRING"
 local tagDef = "MY_ENGINE_TAG_STRING"
 
-os.execute("echo Action="..arg[1])
+local arg1 = arg[1]
+
+os.execute("echo Action="..tostring(arg1))
 
 local function readTags(subStr)
 	local tag = {}
@@ -179,4 +181,6 @@ elseif arg[1] == "pushAll" then
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git -C "..ROOT_DIR..value.." push")
 	end
+else
+	os.execute("echo Error: Unknown action!")
 end
