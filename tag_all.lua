@@ -139,11 +139,9 @@ elseif arg[1] == "commitAll" then
 
 		writeMyVer(verStr, tagStr)
 
-		os.execute("git -C "..ROOT_DIR.."base add ./src/MyVersion.h")
-		os.execute("git -C "..ROOT_DIR.."base commit -m \""..msgStr.."\"")
-
 		for key, value in COMMITS do
 			os.execute("echo Work on "..value..":")
+			os.execute("git -C "..ROOT_DIR..value.." add *")
 			os.execute("git -C "..ROOT_DIR..value.." commit -m \""..msgStr.."\"")
 		end
 	else
