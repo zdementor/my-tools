@@ -164,4 +164,10 @@ elseif arg[1] == "pullAll" then
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git -C "..ROOT_DIR..value.." pull")
 	end
+elseif arg[1] == "pushAll" then
+
+	for key, value in COMMITS do
+		os.execute("echo -------------"..value..":----------------")
+		os.execute("git -C "..ROOT_DIR..value.." push")
+	end
 end
