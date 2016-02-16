@@ -100,16 +100,20 @@ end
 if arg[1] == "tagNext" then
 
 	local tagStr = arg[2]
+	local verStr = getTagStr(verNext)
 
 	if tagStr == nil then
-		tagStr = getTagStr(verNext)
+		tagStr = verStr
 	end
 
 	if tagStr ~= nil then
 		local msgStr = "Tagging to "..tagStr
+
 		os.execute("echo Tagging...")
 		os.execute("echo Tag="..tagStr)
-		writeMyVer(tagStr, tagStr)
+
+		writeMyVer(verStr, tagStr)
+
 		os.execute("git -C "..ROOT_DIR.."base add ./src/MyVersion.h")
 		os.execute("git -C "..ROOT_DIR.."base commit -m \""..msgStr.."\"")
 
@@ -134,6 +138,7 @@ elseif arg[1] == "commitAll" then
 		os.execute("echo Message="..msgStr)
 
 		writeMyVer(verStr, tagStr)
+
 		os.execute("git -C "..ROOT_DIR.."base add ./src/MyVersion.h")
 		os.execute("git -C "..ROOT_DIR.."base commit -m \""..msgStr.."\"")
 
