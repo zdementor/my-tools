@@ -116,18 +116,17 @@ if arg[1] == "tagNext" then
 
 		writeMyVer(verStr, tagStr)
 
-		os.execute("git -C "..ROOT_DIR.."base add ./src/MyVersion.h")
-		os.execute("git -C "..ROOT_DIR.."base commit -m \""..msgStr.."\"")
-
 		for key, value in COMMITS do
 			os.execute("echo Work on "..value..":")
+			os.execute("git -C "..ROOT_DIR..value.." add *")
+			os.execute("git -C "..ROOT_DIR..value.." commit -m \""..msgStr.."\"")
         		os.execute("git -C "..ROOT_DIR..value.." tag -a "..tagStr.." -m \""..msgStr.."\"")
 		end
 	else
 		os.execute("echo Error: Need to specify tag")
 	end
 
-elseif arg[1] == "commitAll" then
+elseif arg[1] == "verNext" then
 
 	local msgStr = arg[2]
 
@@ -140,6 +139,24 @@ elseif arg[1] == "commitAll" then
 		os.execute("echo Message="..msgStr)
 
 		writeMyVer(verStr, tagStr)
+
+		for key, value in COMMITS do
+			os.execute("echo Work on "..value..":")
+			os.execute("git -C "..ROOT_DIR..value.." add *")
+			os.execute("git -C "..ROOT_DIR..value.." commit -m \""..msgStr.."\"")
+		end
+	else
+		os.execute("echo Error: Need to specify commit message")
+	end
+
+elseif arg[1] == "commitAll" then
+
+	local msgStr = arg[2]
+
+	if msgStr ~= nil then
+
+		os.execute("echo Commiting...")
+		os.execute("echo Message="..msgStr)
 
 		for key, value in COMMITS do
 			os.execute("echo Work on "..value..":")
@@ -179,6 +196,7 @@ elseif arg[1] == "pushAll" then
 
 	for key, value in COMMITS do
 		os.execute("echo -------------"..value..":----------------")
+		os.execute("git config --global push.followTags true")
 		os.execute("git -C "..ROOT_DIR..value.." push")
 	end
 else
