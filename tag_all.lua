@@ -6,7 +6,7 @@ local SRC_DIR = ROOT_DIR.."base/src"
 
 local COMMITS = {
 	[1] = "deps",
-      	[2] = "base",
+	[2] = "base",
 	[3] = "robo",
 	[4] = "qshooter",
 }
@@ -39,7 +39,7 @@ end
 local function getNextTag(tag)
 	local tagNext = {}
 	if table.getn(tag) >=3 then
-		for k, v in tag do
+		for k, v in pairs(tag) do
 			tagNext[k] = v
 		end
 		tagNext[3] = tagNext[3] + 1
@@ -72,7 +72,7 @@ local tag = readTags(tagDef)
 
 if table.getn(tag) < 3 and table.getn(ver) >= 3 then
 	tag = {}
-	for k, v in ver do
+	for k, v in pairs(ver) do
 		tag[k] = v
 	end
 end
@@ -116,7 +116,7 @@ if arg[1] == "tagNext" then
 
 		writeMyVer(verStr, tagStr)
 
-		for key, value in COMMITS do
+		for key, value in pairs(COMMITS) do
 			os.execute("echo Work on "..value..":")
 			os.execute("git -C "..ROOT_DIR..value.." add *")
 			os.execute("git -C "..ROOT_DIR..value.." commit -m \""..msgStr.."\"")
@@ -140,7 +140,7 @@ elseif arg[1] == "verNext" then
 
 		writeMyVer(verStr, tagStr)
 
-		for key, value in COMMITS do
+		for key, value in pairs(COMMITS) do
 			os.execute("echo Work on "..value..":")
 			os.execute("git -C "..ROOT_DIR..value.." add *")
 			os.execute("git -C "..ROOT_DIR..value.." commit -m \""..msgStr.."\"")
@@ -158,7 +158,7 @@ elseif arg[1] == "commitAll" then
 		os.execute("echo Commiting...")
 		os.execute("echo Message="..msgStr)
 
-		for key, value in COMMITS do
+		for key, value in pairs(COMMITS) do
 			os.execute("echo Work on "..value..":")
 			os.execute("git -C "..ROOT_DIR..value.." add *")
 			os.execute("git -C "..ROOT_DIR..value.." commit -m \""..msgStr.."\"")
@@ -169,32 +169,32 @@ elseif arg[1] == "commitAll" then
 
 elseif arg[1] == "addAll" then
 
-	for key, value in COMMITS do
+	for key, value in pairs(COMMITS) do
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git -C "..ROOT_DIR..value.." add *")
 	end
 
 elseif arg[1] == "statusAll" then
 
-	for key, value in COMMITS do
+	for key, value in pairs(COMMITS) do
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git -C "..ROOT_DIR..value.." status")
 	end
 elseif arg[1] == "showtagAll" then
 
-	for key, value in COMMITS do
+	for key, value in pairs(COMMITS) do
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git -C "..ROOT_DIR..value.." tag")
 	end
 elseif arg[1] == "pullAll" then
 
-	for key, value in COMMITS do
+	for key, value in pairs(COMMITS) do
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git -C "..ROOT_DIR..value.." pull")
 	end
 elseif arg[1] == "pushAll" then
 
-	for key, value in COMMITS do
+	for key, value in pairs(COMMITS) do
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git config --global push.followTags true")
 		os.execute("git -C "..ROOT_DIR..value.." push")
