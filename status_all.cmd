@@ -1,1 +1,1 @@
-..\bin\lua.exe .\tag_all.lua statusAll
+.\script .\tag_all.lua statusAll

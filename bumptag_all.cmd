@@ -1,1 +1,1 @@
-..\bin\lua.exe .\tag_all.lua %1 %2
+.\script .\tag_all.lua %1 %2

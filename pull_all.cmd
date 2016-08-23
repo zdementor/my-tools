@@ -1,1 +1,1 @@
-..\bin\lua.exe .\tag_all.lua pullAll
+.\script .\tag_all.lua pullAll

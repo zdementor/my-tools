@@ -1,1 +1,1 @@
-..\bin\lua.exe .\tag_all.lua showtagAll
+.\script .\tag_all.lua showtagAll

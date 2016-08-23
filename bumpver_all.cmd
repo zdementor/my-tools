@@ -1,1 +1,1 @@
-..\bin\lua.exe .\tag_all.lua verNext %1
+.\script .\tag_all.lua verNext %1

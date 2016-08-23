@@ -184,7 +184,7 @@ elseif arg[1] == "showtagAll" then
 
 	for key, value in pairs(COMMITS) do
 		os.execute("echo -------------"..value..":----------------")
-		os.execute("git -C "..ROOT_DIR..value.." tag")
+		os.execute("git -C "..ROOT_DIR..value.." tag --column=auto --sort=version:refname")
 	end
 elseif arg[1] == "pullAll" then
 
