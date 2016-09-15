@@ -180,6 +180,12 @@ elseif arg[1] == "statusAll" then
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git -C "..ROOT_DIR..value.." status")
 	end
+elseif arg[1] == "diffAll" then
+
+	for key, value in pairs(COMMITS) do
+		local diffName = ROOT_DIR..value..".diff"
+		os.execute("git -C "..ROOT_DIR..value.." diff > "..diffName)
+	end
 elseif arg[1] == "showtagAll" then
 
 	for key, value in pairs(COMMITS) do
