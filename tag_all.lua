@@ -11,6 +11,8 @@ local COMMITS = {
 	[4] = "qshooter",
 }
 
+local BRANCH = "master"
+
 local verDef = "MY_ENGINE_VERSION_STRING"
 local tagDef = "MY_ENGINE_TAG_STRING"
 
@@ -203,7 +205,7 @@ elseif arg[1] == "pushAll" then
 	for key, value in pairs(COMMITS) do
 		os.execute("echo -------------"..value..":----------------")
 		os.execute("git config --global push.followTags true")
-		os.execute("git -C "..ROOT_DIR..value.." push")
+		os.execute("git -C "..ROOT_DIR..value.." push origin "..BRANCH)
 	end
 else
 	os.execute("echo Error: Unknown action!")
